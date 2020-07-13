@@ -5,39 +5,40 @@
 
     <div class="text-center">
         @model SearchViewModel
-        <div class="row justify-content-center mt-4">
-            @using (Html.BeginForm("Search", "Home", Model, FormMethod.Get))
-            {
-                <div class="input-group mb-3">
+       
+        @using (Html.BeginForm("Search", "Home", Model, FormMethod.Get))
+        {
+            <div class="row justify-content-center mt-4">
+                <div class="input-group">
                     @Html.TextBoxFor(model => model.SearchQuery, null, new { @placeholder = "Enter Your Search Here!", @class = "form-control" })
                     <div class="input-group-append">
                         <input type="submit" class="btn btn-block btn-success" value="Search" />
                     </div>
                 </div>
-            }
-        </div>
-        @if (!string.IsNullOrWhiteSpace(Model.SearchQuery) && Model.Results.Count != 0)
-        {
-    <div class="row justify-content-center mt-4">
-        @using (Html.BeginForm("Tabify", "Home", FormMethod.Get))
-        {
-            
-            @Html.HiddenFor(model => model.Index);
-            @Html.HiddenFor(model => model.MaxPages);
-            @Html.HiddenFor(model => model.SearchQuery);
-            <div class="btn-group btn-group-lg mb-3">
-                @if (Model.Index > 0)
-                {
-                    <input type="submit" class="btn btn-secondary border border-dark" value="Previous" name="command" />
-                }
-                <input type="button" class="btn btn-secondary border border-dark" value="@(Model.Index+1)"  />
-                @if (Model.Index < (Model.MaxPages - 1))
-                {
-                    <input type="submit" class="btn  btn-secondary border border-dark" value="Next" name="command" />
-                }
             </div>
         }
-    </div>
+        
+        @if (!string.IsNullOrWhiteSpace(Model.SearchQuery) && Model.Results.Count != 0)
+        {
+            @using (Html.BeginForm("Tabify", "Home", FormMethod.Get))
+            {
+                <div class="row justify-content-center mt-4">
+                    @Html.HiddenFor(model => model.Index);
+                    @Html.HiddenFor(model => model.MaxPages);
+                    @Html.HiddenFor(model => model.SearchQuery);
+                    <div class="btn-group btn-group-lg mb-3">
+                        @if (Model.Index > 0)
+                        {
+                            <input type="submit" class="btn btn-secondary border border-dark" value="Previous" name="command" />
+                        }
+                        <input type="button" class="btn btn-secondary border border-dark" value="@(Model.Index+1)" />
+                        @if (Model.Index < (Model.MaxPages - 1))
+                        {
+                            <input type="submit" class="btn  btn-secondary border border-dark" value="Next" name="command" />
+                        }
+                    </div>
+                </div>
+            }
         }
         @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
         {

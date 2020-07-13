@@ -44,33 +44,12 @@ namespace SearchEngine.Controllers
         public IActionResult Search(SearchViewModel Search)
         {
 
-            List<string> searchTerms = new List<string>(Search.SearchQuery.Split(" "));
-            string excludedTerms = string.Empty;
-            string includedTerms = string.Empty;
-            foreach (string term in searchTerms)
-            {
-                if (term.StartsWith('-'))
-                {
-                    excludedTerms += $"+{term.Substring(1)}";
-                }
-                else if (term.StartsWith('+'))
-                {
-                    includedTerms += $"+{term.Substring(1)}";
-                }
-            }
-            if(!string.IsNullOrWhiteSpace(excludedTerms))
-            {
-                excludedTerms = excludedTerms.Substring(1);
-            }
-            if (!string.IsNullOrWhiteSpace(includedTerms))
-            {
-                includedTerms = includedTerms.Substring(1);
-            }
-            Search = PerformSearch(Search, excludedTerms, includedTerms);
+            Search = PerformSearch(Search);
             return View("Index", Search);
         }
+    
 
-        protected SearchViewModel PerformSearch(SearchViewModel Search, string exclude = "", string include = "")
+        protected SearchViewModel PerformSearch(SearchViewModel Search)
         {
             try
             {
@@ -78,14 +57,36 @@ namespace SearchEngine.Controllers
                 {
                     if (!string.IsNullOrWhiteSpace(Search.SearchQuery))
                     {
-                        string query = $"{Search.api}{Search.SearchQuery.Replace(" ", "+")}&start={Search.Index*10 +1}";
-                        if(!string.IsNullOrWhiteSpace(include))
+                        List<string> searchTerms = new List<string>(Search.SearchQuery.Split(" "));
+                        string excludedTerms = string.Empty;
+                        string includedTerms = string.Empty;
+                        foreach (string term in searchTerms)
                         {
-                            query += $"&exactTerms={include}";
+                            if (term.StartsWith('-'))
+                            {
+                                excludedTerms += $"+{term.Substring(1)}";
+                            }
+                            else if (term.StartsWith('+'))
+                            {
+                                includedTerms += $"+{term.Substring(1)}";
+                            }
                         }
-                        if (!string.IsNullOrWhiteSpace(exclude))
+                        if (!string.IsNullOrWhiteSpace(excludedTerms))
                         {
-                            query += $"&excludeTerms={exclude}";
+                            excludedTerms = excludedTerms.Substring(1);
+                        }
+                        if (!string.IsNullOrWhiteSpace(includedTerms))
+                        {
+                            includedTerms = includedTerms.Substring(1);
+                        }
+                        string query = $"{Search.api}{Search.SearchQuery.Replace(" ", "+")}&start={Search.Index*10 +1}";
+                        if(!string.IsNullOrWhiteSpace(includedTerms))
+                        {
+                            query += $"&exactTerms={includedTerms}";
+                        }
+                        if (!string.IsNullOrWhiteSpace(excludedTerms))
+                        {
+                            query += $"&excludeTerms={excludedTerms}";
                         }
                         string json = new WebClient().DownloadString(query);
                         SearchObject.Rootobject searchObj = JsonConvert.DeserializeObject<SearchObject.Rootobject>(json);
