@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Pog Search";
+
+}
+
+    <div class="text-center">
+        @model SearchViewModel
+        <div class="row justify-content-center mt-4">
+            @using (Html.BeginForm("Search", "Home", Model, FormMethod.Get))
+            {
+                <div class="input-group mb-3">
+                    @Html.TextBoxFor(model => model.SearchQuery, null, new { @placeholder = "Enter Your Search Here!", @class = "form-control" })
+                    <div class="input-group-append">
+                        <input type="submit" class="btn btn-block btn-success" value="Search" />
+                    </div>
+                </div>
+            }
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.SearchQuery) && Model.Results.Count != 0)
+        {
+    <div class="row justify-content-center mt-4">
+        @using (Html.BeginForm("Tabify", "Home", FormMethod.Get))
+        {
+            
+            @Html.HiddenFor(model => model.Index);
+            @Html.HiddenFor(model => model.MaxPages);
+            @Html.HiddenFor(model => model.SearchQuery);
+            <div class="btn-group btn-group-lg mb-3">
+                @if (Model.Index > 0)
+                {
+                    <input type="submit" class="btn btn-secondary border border-dark" value="Previous" name="command" />
+                }
+                <input type="button" class="btn btn-secondary border border-dark" value="@(Model.Index+1)"  />
+                @if (Model.Index < (Model.MaxPages - 1))
+                {
+                    <input type="submit" class="btn  btn-secondary border border-dark" value="Next" name="command" />
+                }
+            </div>
+        }
+    </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+        {
+            <div class="row justify-content-center mt-4">
+                @if (Model.Results.Count == 0)
+                {
+                    <h4 class="font-weight-bold">No Results Found!</h4>
+                }
+                else
+                {
+                    <h5 class="font-weight-bold">Total Results: @Model.TotalResults</h5>
+                }
+            </div>
+        }
+        <div class="row justify-content-center w-100 mt-5">
+            <ul class="list-group pl-2 pr-2 w-100 ">
+                @foreach (Result result in Model.Results)
+                {
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-2">
+                                @if (!string.IsNullOrWhiteSpace(result.ThumbnailSrc))
+                                {
+                                    <img width="100" height="100" src="@result.ThumbnailSrc" />
+                                }
+                            </div>
+                            <div class="col-10">
+                                <div class="row ">
+                                    <a href="@result.Url">
+                                        <h3 class="font-weight-bold text-info">@result.Name</h3>
+                                    </a>
+                                </div>
+                                <div class="row">
+                                    <a href="@result.Url">@result.ShortUrl</a>
+                                </div>
+                                <div class="row">
+                                    <h6 class="font-weight-bold">@result.Description</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
