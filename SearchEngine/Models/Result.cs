@@ -15,10 +15,7 @@ namespace SearchEngine.Models
             this.ShortUrl = surl;
             this.Description = desc;
             this.ThumbnailSrc = thumbnailSrc;
-
-
         }
-
         public string Name { set; get; }
         public string Url { set; get; }
 

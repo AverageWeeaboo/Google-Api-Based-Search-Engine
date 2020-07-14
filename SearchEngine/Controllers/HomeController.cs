@@ -14,10 +14,7 @@ namespace SearchEngine.Controllers
     
     public class HomeController : Controller
     {
-
-
         private readonly ILogger<HomeController> _logger;
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -60,15 +57,21 @@ namespace SearchEngine.Controllers
                         List<string> searchTerms = new List<string>(Search.SearchQuery.Split(" "));
                         string excludedTerms = string.Empty;
                         string includedTerms = string.Empty;
+                        string searchQuery = string.Empty;
                         foreach (string term in searchTerms)
                         {
                             if (term.StartsWith('-'))
                             {
+
                                 excludedTerms += $"+{term.Substring(1)}";
                             }
                             else if (term.StartsWith('+'))
                             {
                                 includedTerms += $"+{term.Substring(1)}";
+                            }
+                            else
+                            {
+                                searchQuery += $"+{term}";
                             }
                         }
                         if (!string.IsNullOrWhiteSpace(excludedTerms))
@@ -79,7 +82,11 @@ namespace SearchEngine.Controllers
                         {
                             includedTerms = includedTerms.Substring(1);
                         }
-                        string query = $"{Search.api}{Search.SearchQuery.Replace(" ", "+")}&start={Search.Index*10 +1}";
+                        if (!string.IsNullOrWhiteSpace(searchQuery))
+                        {
+                            searchQuery = searchQuery.Substring(1);
+                        }
+                        string query = $"{Search.api}{searchQuery}&start={Search.Index*10 +1}";
                         if(!string.IsNullOrWhiteSpace(includedTerms))
                         {
                             query += $"&exactTerms={includedTerms}";

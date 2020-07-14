@@ -9,8 +9,8 @@ namespace SearchEngine.Models
 
     public class SearchViewModel
     {
-        protected string apiID = "012776195944492167572:hvfearqxilu";
-        protected string key = "AIzaSyCEwllTx8dDBvu6EFUhnneQBSmLFOxdxl4";
+        protected string apiID = "011789807408623701924:jnuvzx_a1ea";
+        protected string key = "AIzaSyDXqg_LXTF-2Qib3QU6Q_nvn-HBQpNzJKI";
 
         public SearchViewModel ()
         {

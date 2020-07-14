@@ -5,7 +5,7 @@
 
     <div class="text-center">
         @model SearchViewModel
-       
+        
         @using (Html.BeginForm("Search", "Home", Model, FormMethod.Get))
         {
             <div class="row justify-content-center mt-4">
@@ -17,15 +17,18 @@
                 </div>
             </div>
         }
-        
+        @if(string.IsNullOrWhiteSpace(Model.SearchQuery))
+        {
+            <img  src="pogicon.png" />
+        }
         @if (!string.IsNullOrWhiteSpace(Model.SearchQuery) && Model.Results.Count != 0)
         {
             @using (Html.BeginForm("Tabify", "Home", FormMethod.Get))
             {
                 <div class="row justify-content-center mt-4">
-                    @Html.HiddenFor(model => model.Index);
-                    @Html.HiddenFor(model => model.MaxPages);
-                    @Html.HiddenFor(model => model.SearchQuery);
+                    @Html.HiddenFor(model => model.Index)
+                    @Html.HiddenFor(model => model.MaxPages)
+                    @Html.HiddenFor(model => model.SearchQuery)
                     <div class="btn-group btn-group-lg mb-3">
                         @if (Model.Index > 0)
                         {
