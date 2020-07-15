@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CustomFunctionLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,12 +10,15 @@ namespace SearchEngine.Models
 
     public class SearchViewModel
     {
-        protected string apiID = "011789807408623701924:jnuvzx_a1ea";
-        protected string key = "AIzaSyDXqg_LXTF-2Qib3QU6Q_nvn-HBQpNzJKI";
+        protected string apiID = "=!S&tBWl^r(36ShX9nJ,q45EH+,A*26qZ/\\C<Q#!guJO+";
+        protected string key = "-<rnh\"7HGA:a*W$_Jb/Equ)^*)!pf8?t7J2>DJI@m$(3&%B[(B";
+        protected ulong DecryptKey = 208299813696966;
 
         public SearchViewModel ()
         {
-            this.api = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + apiID + "&q=";
+            //Custom encryption
+            StringEncryption encryptor = new StringEncryption();
+            this.api = "https://www.googleapis.com/customsearch/v1?key=" + encryptor.Decode(key, DecryptKey) + "&cx=" + encryptor.Decode(apiID, DecryptKey) + "&q=";
             this.Results = new List<Result>();
             this.TotalResults = 0;
             this.Index = 0;
