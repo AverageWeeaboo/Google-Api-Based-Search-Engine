@@ -10,15 +10,9 @@ namespace SearchEngine.Models
 
     public class SearchViewModel
     {
-        protected string apiID = "=!S&tBWl^r(36ShX9nJ,q45EH+,A*26qZ/\\C<Q#!guJO+";
-        protected string key = "-<rnh\"7HGA:a*W$_Jb/Equ)^*)!pf8?t7J2>DJI@m$(3&%B[(B";
-        protected ulong DecryptKey = 208299813696966;
-
         public SearchViewModel ()
         {
-            //Custom encryption
-            StringEncryption encryptor = new StringEncryption();
-            this.api = "https://www.googleapis.com/customsearch/v1?key=" + encryptor.Decode(key, DecryptKey) + "&cx=" + encryptor.Decode(apiID, DecryptKey) + "&q=";
+            this.api = "https://www.googleapis.com/customsearch/v1?key=";
             this.Results = new List<Result>();
             this.TotalResults = 0;
             this.Index = 0;

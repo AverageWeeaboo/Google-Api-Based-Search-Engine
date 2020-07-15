@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using CustomFunctionLibrary;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SearchEngine.Models;
@@ -14,10 +16,10 @@ namespace SearchEngine.Controllers
     
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IConfiguration _configuration;
+        public HomeController(IConfiguration configuration)
         {
-            _logger = logger;
+            _configuration = configuration;
         }
 
         public IActionResult Tabify(SearchViewModel Search, string command)
@@ -86,7 +88,7 @@ namespace SearchEngine.Controllers
                         {
                             searchQuery = searchQuery.Substring(1);
                         }
-                        string query = $"{Search.api}{searchQuery}&start={Search.Index*10 +1}";
+                        string query = $"{GetApiString(Search.api)}{searchQuery}&start={Search.Index*10 +1}";
                         if(!string.IsNullOrWhiteSpace(includedTerms))
                         {
                             query += $"&exactTerms={includedTerms}";
@@ -95,6 +97,7 @@ namespace SearchEngine.Controllers
                         {
                             query += $"&excludeTerms={excludedTerms}";
                         }
+                        
                         string json = new WebClient().DownloadString(query);
                         SearchObject.Rootobject searchObj = JsonConvert.DeserializeObject<SearchObject.Rootobject>(json);
                         Search.Results = Get_Results(searchObj);
@@ -151,11 +154,14 @@ namespace SearchEngine.Controllers
             return View("Index", new SearchViewModel()); ;
         }
 
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        private string GetApiString(string baseStr)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            StringEncryption encryptor = new StringEncryption();
+            string query = baseStr;
+            string str =_configuration.GetValue<string>("ApiKey");
+            query += encryptor.Decode(_configuration.GetValue<string>("ApiKey"), Convert.ToUInt64(_configuration.GetValue<string>("DecryptKey"))) + "&cx=";
+            query += encryptor.Decode(_configuration.GetValue<string>("ApiConnString"), Convert.ToUInt64(_configuration.GetValue<string>("DecryptKey"))) + "&q=";
+            return query;
         }
     }
 
